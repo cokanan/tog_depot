@@ -8,7 +8,7 @@ class Depot::FilesController < ApplicationController
       @order = "created_at DESC"
     end
     @files = Depot::File.paginate(:per_page => 10, :page => params[:page], :order => @order, :conditions => ['state = ?', 'public'])
-    @folders = Depot::Filefolder.paginate(:page => params[:page], :conditions => ['state = ?', 'public'], :order => @order)
+    @folders = Depot::Filefolder.find(:all, :conditions => ['state = ?', 'public'], :order => @order)
   end
 
   def show
