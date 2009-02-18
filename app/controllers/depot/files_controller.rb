@@ -1,6 +1,5 @@
 class Depot::FilesController < ApplicationController
 
-  helper 'depot/files'
 
   def index
     if params[:order]
