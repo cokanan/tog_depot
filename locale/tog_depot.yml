@@ -1,0 +1,6 @@
+en:
+  interface:
+    member:
+      my_files: My files
+    site:
+      files: Files

@@ -1,0 +1,6 @@
+es:
+  interface:
+    member:
+      my_files: Mis ficheros
+    site:
+      files: Ficheros

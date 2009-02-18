@@ -2,6 +2,10 @@ require_plugin 'tog_core'
 require_plugin 'seo_urls'
 require_plugin 'attachment_fu'
 
+Dir[File.dirname(__FILE__) + '/locale/**/*.yml'].each do |file|
+  I18n.load_path << file
+end
+
 Tog::Interface.sections(:site).add "Files", "/depot/files"     
 
 Tog::Interface.sections(:member).add "My files", "/member/depot/files"
