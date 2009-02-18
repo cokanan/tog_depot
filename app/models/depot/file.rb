@@ -31,6 +31,10 @@ class Depot::File < ActiveRecord::Base
   event :private do
     transitions :from => [:public] , :to => :private
   end
+  
+  def creation_date(format=:short)
+    I18n.l(self.created_at, :format => format)
+  end  
 
 
   def owner
