@@ -1,15 +1,17 @@
 class Member::Depot::FilesController < Member::BaseController
  
+  before_filter :load_file, :only => [:show, :destroy, :edit, :update]
+  before_filter :check_owner, :only => [:show, :destroy, :edit, :update]
+
+  before_filter :calculate_disk_usage
+  before_filter :quota
+
   def index
-    if params[:order]
-      @order = params[:order]
-    else 
-      @order = "created_at DESC"
-    end
-    @my_files = current_user.files.paginate(:per_page => 10, :page => params[:page], :order => @order)
-    @my_folders = current_user.filefolders.paginate(:page => params[:page], :order => @order)
-		@tot_size = current_user.files.sum('size').to_i / 1024
-		@max_storage = Tog::Plugins.settings(:tog_depot, "file.max_size_storage")
+    @order = params[:order] || "name asc"
+    @files = current_user.files.paginate(:per_page => 20, 
+                                         :conditions => ['father_id = 0'],
+                                         :page => params[:page], 
+                                         :order => "folder desc, #{@order}")
   end
 
   def by_tag
@@ -20,34 +22,38 @@ class Member::Depot::FilesController < Member::BaseController
 
   def show
     @file = current_user.files.find(params[:id])
-    @extension = @file.filename.to_s.scan(/\.\w+$/)
+    @page = params[:page] || 1 
+    @children = @file.paginated_children(@page, 'name asc')
   end
  
   def new
-		@tot_size = current_user.files.sum('size').to_i / 1024
-		@max_storage = Tog::Plugins.settings(:tog_depot, "file.max_size_storage")
-		if (@max_storage.to_i - @tot_size.to_i)<0
-       flash[:error] = 'Your disk quota has been exceeded, please contact your administrator.'
-       redirect_to member_depot_files_path
-		end
-    @folders = current_user.filefolders.paginate(:page => params[:page], :order => "created_at DESC")
+		@file = Depot::File.new(:folder => params[:file_type] == 'folder')
+		father = current_user.files.find(params[:father_id]) if params[:father_id]
+		@file.father = father if father
   end
  
   def create
+    
+		if (@disk_usage > @quota)
+       flash[:error] = I18n.t('tog_depot.member.quota_error')
+       redirect_to member_depot_files_path
+		end    
+    
     @file = current_user.files.new(params[:file])
     @file.user_id = current_user.id
-		@file.num_download=0
+    father_id = params[:file][:father_id] || 0
+    father = current_user.files.find(father_id) if father_id.to_i  > 0
+    @file.father = father if father && father.user == current_user
  
     respond_to do |wants|
-      if @file.save
-        @file.send("#{params[:state].to_s}!")
+      if @file.save!
         wants.html do
-          flash[:ok] = 'New file Update.'
-          redirect_to member_depot_files_path
+          flash[:ok] = I18n.t('tog_depot.member.file_created') 
+          redirect_to member_depot_file_path(@file)
         end
       else
         wants.html do
-          flash.now[:error] = 'Failed to Update a new file.'
+          flash.now[:error] = 'Failed to create a new file.'
           render :action => :new
         end
       end
@@ -58,18 +64,15 @@ class Member::Depot::FilesController < Member::BaseController
   end
  
   def edit
-    @file = current_user.files.find(params[:id])
-    @folders = current_user.filefolders.paginate(:page => params[:page], :order => "created_at DESC")
   end
   
   def update
     @file = current_user.files.find(params[:id])
     respond_to do |wants|
       if @file.update_attributes(params[:file])
-         @file.send("#{params[:state].to_s}!")
          wants.html do
-          flash[:ok] = "File <b>#{@file.title}</b> succcessfully updated!"
-          redirect_to member_depot_files_path
+          flash[:ok] = I18n.t('tog_depot.member.file_updated') 
+          redirect_to member_depot_file_path(@file)
         end
       else
         wants.html do
@@ -79,24 +82,37 @@ class Member::Depot::FilesController < Member::BaseController
       end
     end
   end
-
-  def download
-    @file = current_user.files.find params[:id]
-    @num = @file.num_download+1
-    @file.update_attribute (:num_download, @num)
-    send_file("public/" + @file.public_filename)
-  end
 	
   def destroy
-    @file = current_user.files.find params[:id]
     @file.destroy
     respond_to do |wants|
       wants.html do
-        flash[:ok]='File deleted.'
+        flash[:ok] = I18n.t('tog_depot.member.file_removed') 
         redirect_to member_depot_files_path
       end
     end
     
   end
 
+
+  private 
+  
+    def load_file
+      @file = current_user.files.find params[:id]
+    end
+  
+    def check_owner
+      unless @file.user == current_user
+        flash[:error] = "You aren't this file's owner"
+        redirect_to member_depot_files_path
+      end      
+    end
+  
+    def calculate_disk_usage
+  		@disk_usage = current_user.files.sum('file_file_size').to_i / 1024
+    end
+    
+    def quota
+  		@quota = Tog::Plugins.settings(:tog_depot, "file.user_quota_mb").to_i.megabytes
+    end
 end

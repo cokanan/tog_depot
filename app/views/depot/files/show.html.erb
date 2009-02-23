@@ -1,69 +1,42 @@
-<% include_stylesheet "/tog_depot/stylesheets/depot" %>
 <% content_for :sidebar do %>
-  <%= render :partial => 'tag_cloud_file', :locals => { :file => @file } %>
 <% end %>
 
+<%= render :partial => '/depot/header'%>
 
-<div id="file_overview">
- <div class="floater_L">
- <div class="fileicon_48"><img src="/tog_depot/images/1px.gif" border="0" height="26" width="5"/><br /><%= @extension %></div> 
- </div>
- <div class="floater_R">
- <h1><img src="/tog_depot/images/1px.gif" border="0" height="28" width="5"/><br /><%= @file.title %></h1>
- </div>
- <div class="float_breaker"></div>
- <div style="padding-left:15px;"> 
+<h1><%= @file.name %></h1>
 
+<p>
 <% tags = @file.tag_list %>
                   <b>Tags:</b>
                   <% if !tags.blank? %>
                     <% for tag in tags %>
-                      <%= link_to tag, tag_depot_files_path(tag.to_sym) %>
+                      <%= link_to tag, tag_member_depot_files_path(tag.to_sym) %>
                     <% end %>
                   <% else %>
                     No tags.
                   <% end %> 
+</p>
 
   <p class="file_metadata">
-   <b>Created:</b> <%= @file.created_at %><br />
-   <b>Updated:</b> <%= @file.updated_at %><br />
-   <b>Size:</b> 
-	 <%if @file.size%>
-	 <%= @file.size / 1024 %> Mb. (<%= @file.size %> Bytes)
+   Created at: <%= @file.creation_date %><br />
+	 <%unless @file.folder%>
+		Size: <%= number_to_human_size(@file.file_file_size)%>
    <%end%>
    <br />
-   <b>Owner:</b> <%= @file.user.login %><br />   
-   <b>Times downloaded:</b> <%= @file.num_download %><br />
-   <b>Parent folder:</b> 
-	 	<%if @file.filefolder%>
-			<%if @file.filefolder.state== 'public'%>
-				<%= link_to @file.filefolder.title, depot_filefolder_url(@file.filefolder.id) %>
-      <%else%>
-      	<%=@file.filefolder.title%> (private)
-      <%end%>
-    <%end%>
-   <br />
-   <b>Visibility: <%= @file.state %></b>
+   Downloads: <%= @file.downloads %><br />
+   Path: <%= path(@file, true) %><br />
   </p>
   <p>
-   <b>Description:</b>
+   Description:<br/>
    <%= @file.description %> 
-   <br /><br />
   </p>
- </div>
- 
-  <div class="floater_L" style="float:left;">
-  <a href=" <%= depot_files_download_path %> "><img src="/tog_depot/images/tog-depot_file_dl.gif" border="0" /></a></div>
-  <div style="float:left; padding-left:8px;"><h2 class="no_margins" style="padding:0px; border:0px; margin:0px;">
-	<%= link_to "Download file",  depot_files_download_path %>
-  </h2>
-  
-  <%= report_abuse_link(@file, 'Report abuse', :class => 'abuse_link') -%>
-  
-  </div>
-  <div style="clear:both;" class="float_breaker"></div><br />
 
-<%= link_to '&lt;&lt; Back to filelist',  depot_files_path %><br /><br />
+
+	<%if @file.folder%>
+		<%= render :partial => 'folder_content', :locals => {:files => @file.paginated_children}%>
+	<%else%>
+		<%= link_to "Download file",  depot_files_download_path %></h2>
+	<%end%> 
+
  <%= render :partial => "shared/comments", :locals => { :commentable => @file } %>
 
-</div>

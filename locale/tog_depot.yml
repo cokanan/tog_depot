@@ -4,3 +4,21 @@ en:
       my_files: My files
     site:
       files: Files
+  tog_depot:
+    site:
+      privacy_error: You are not allowed to see this file
+    member:
+      quota_error: Your disk quota has been exceeded.
+      file_created: File created successfully
+      file_updated: File created successfully
+      file_removed: File removed successfully
+    model:
+      root: Root
+      path: Path 
+      name: Name
+      tags: Tags
+      tags_explanation: Separated by ,
+      privacy: Privacy
+      privacy_explanation: This file/folder is private
+      file: File
+      description: Description

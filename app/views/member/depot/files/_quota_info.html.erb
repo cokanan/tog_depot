@@ -1,0 +1,3 @@
+Disk usage: <%= number_to_human_size(@disk_usage) %><br/>
+Quota: <%= number_to_human_size(@quota)%><br/>
+Spece left: <%= number_to_human_size(@quota - @disk_usage) %>
