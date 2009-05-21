@@ -2,6 +2,7 @@
 # add <tt>map.resources</tt>, here you would add just <tt>resources</tt>
 
 with_options(:controller => 'depot/files', :conditions => { :method => :get }) do |file|
+  file.user_depot_files      'depot/files/user/:user_id', :action => 'by_user'
   file.tag_depot_files      'depot/files/tag/:tag_name', :action => 'by_tag'
   file.depot_files_order    'depot/files/order/:order',  :action => 'index'
   file.depot_files_download 'depot/files/download/:id', :action => 'download'

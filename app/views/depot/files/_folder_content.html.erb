@@ -1,0 +1,24 @@
+<ul class="listA">
+  <%files.each do |file|%>
+    <li class="clearfix">
+      <div class="image"><%= write_icon(file)%></div>
+      <div class="title"><%= link_to file.name, depot_file_path(file) %></div>
+      <div class="date">
+          <span class="meta">Autor:</span> <%= link_to file.user.profile.full_name, profile_path(file.user.profile)%>
+          &nbsp;&nbsp;&nbsp;
+          <span class="meta">Fecha:</span> <strong><%=file.creation_date%></strong>
+      </div>
+      <div class="text">
+        <% tags = file.tag_list %>
+        Etiquetas:
+        <% if !tags.blank? %>
+          <% for tag in tags %>
+            <%= link_to tag, tag_depot_files_path(tag) %>
+          <% end %>
+        <% else %>
+          No tiene etiquetas.
+        <% end %>
+      </div>
+    </li>
+  <% end %>
+</ul>

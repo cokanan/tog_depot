@@ -27,17 +27,17 @@ class Member::Depot::FilesController < Member::BaseController
   end
  
   def new
-		@file = Depot::File.new(:folder => params[:file_type] == 'folder')
-		father = current_user.files.find(params[:father_id]) if params[:father_id]
-		@file.father = father if father
+    @file = Depot::File.new(:folder => params[:file_type] == 'folder')
+    father = current_user.files.find(params[:father_id]) if params[:father_id]
+    @file.father = father if father
   end
  
   def create
     
-		if (@disk_usage > @quota)
+    if (@disk_usage > @quota)
        flash[:error] = I18n.t('tog_depot.member.quota_error')
        redirect_to member_depot_files_path
-		end    
+    end    
     
     @file = current_user.files.new(params[:file])
     @file.user_id = current_user.id
@@ -82,7 +82,7 @@ class Member::Depot::FilesController < Member::BaseController
       end
     end
   end
-	
+  
   def destroy
     @file.destroy
     respond_to do |wants|
@@ -109,10 +109,10 @@ class Member::Depot::FilesController < Member::BaseController
     end
   
     def calculate_disk_usage
-  		@disk_usage = current_user.files.sum('file_file_size').to_i / 1024
+      @disk_usage = current_user.files.sum('file_file_size').to_i
     end
     
     def quota
-  		@quota = Tog::Plugins.settings(:tog_depot, "file.user_quota_mb").to_i.megabytes
+      @quota = Tog::Plugins.settings(:tog_depot, "file.user_quota_mb").to_i.megabytes
     end
 end

@@ -5,6 +5,9 @@ en:
     site:
       files: Files
   tog_depot:
+    plugin_title: Files
+    plugin_name: Depot
+    plugin_description: Small file manager
     site:
       privacy_error: You are not allowed to see this file
     member:
@@ -12,6 +15,9 @@ en:
       file_created: File created successfully
       file_updated: File created successfully
       file_removed: File removed successfully
+      create_file: Upload file
+      create_subfolder: Create subfolder
+      quota_usage: You are currently using {{used}} of your {{of}} ({{left}} left)
     model:
       root: Root
       path: Path 
@@ -22,3 +28,7 @@ en:
       privacy_explanation: This file/folder is private
       file: File
       description: Description
+      owner: Onwer
+      date: Date
+      size: Size
+      downloads: Downloads      

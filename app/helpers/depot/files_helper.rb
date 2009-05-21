@@ -19,6 +19,16 @@ module Depot
         new_member_depot_file_path(type_name)
       end
     end
+
+    def user_files_path(file, user)
+      if (file.father)
+        father_path = user_files_path(file.father, user)
+        file_path = link_for_file(file)
+        return  "#{father_path}/#{file_path}"
+      else
+        return "/#{link_to(I18n.t('tog_depot.model.root'), user_depot_files_path(:user_id => user))}/#{link_for_file(file)}"
+      end
+    end
     
     def path(file, for_member=false)
       if (file.father)
@@ -44,7 +54,7 @@ module Depot
     
     private
     
-      def link_for_file(file, for_member)
+      def link_for_file(file, for_member=false)
         unless file.new_record?
           if for_member
             link_to file.name, member_depot_file_path(file)

@@ -6,22 +6,30 @@ class Depot::FilesController < ApplicationController
   def index
     @order = params[:order] || "name asc"
     @page = params[:page] || 1
-    @files = Depot::File.paginate(:per_page => 10, 
-                                  :conditions => ['father_id = 0 and privacy = ?', Depot::File::PUBLIC],
+    @files = Depot::File.public.paginate(:per_page => 10, 
+                                  :conditions => ['father_id = 0'],
                                   :page => @page, 
                                   :order => "folder desc, #{@order}")    
 
   end
 
   def show
-#    @extension = @file.filename.to_s.scan(/\.\w+$/)
   end
 
+  def by_user
+    @user = User.find(params[:user_id])
+    @page = params[:page] || 1    
+    @order = params[:order] || "name asc" 
+    @files = @user.files.public.paginate(:per_page => 10, 
+                                         :conditions => ['father_id = 0'],
+                                         :page => @page, 
+                                         :order => "folder desc, #{@order}")
+  end
+  
   def by_tag
     @tag  =  Tag.find_by_name(params[:tag_name])
     @page = params[:page] || 1    
-    @files = Depot::File.find_tagged_with(@tag, 
-                                          :conditions => ['privacy = ?', Depot::File::PUBLIC]).paginate(
+    @files = Depot::File.public.find_tagged_with(@tag).paginate(
                                               :per_page => 20, 
                                               :page => @page) 
   end

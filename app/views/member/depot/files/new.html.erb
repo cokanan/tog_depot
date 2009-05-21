@@ -5,9 +5,9 @@
 <% form_for :file, :url => member_depot_files_path, :html => {:id => "create_file", :multipart => true} do |f| -%>
 
 
-	<%= render :partial => 'form', :locals => {:f => f}%>
+  <%= render :partial => 'form', :locals => {:f => f}%>
 
-	<div class="actions">
-		<%= submit_tag 'Create', :class => 'button mainaction' %>
-	</div>
+  <div class="actions">
+    <%= submit_tag @file.folder? ? I18n.t("tog_depot.member.create_subfolder") : I18n.t("tog_depot.member.create_file"), :class => 'button mainaction' %>
+  </div>
 <% end -%>

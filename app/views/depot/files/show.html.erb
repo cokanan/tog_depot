@@ -1,42 +1,56 @@
 <% content_for :sidebar do %>
 <% end %>
 
-<%= render :partial => '/depot/header'%>
+<div class="internal_padding">
 
-<h1><%= @file.name %></h1>
+     <div class="titleC">
+       <%= @file.name -%>
+     </div>
 
-<p>
-<% tags = @file.tag_list %>
-                  <b>Tags:</b>
-                  <% if !tags.blank? %>
-                    <% for tag in tags %>
-                      <%= link_to tag, tag_member_depot_files_path(tag.to_sym) %>
-                    <% end %>
-                  <% else %>
-                    No tags.
-                  <% end %> 
-</p>
+     <br />
 
-  <p class="file_metadata">
-   Created at: <%= @file.creation_date %><br />
-	 <%unless @file.folder%>
-		Size: <%= number_to_human_size(@file.file_file_size)%>
-   <%end%>
-   <br />
-   Downloads: <%= @file.downloads %><br />
-   Path: <%= path(@file, true) %><br />
-  </p>
-  <p>
-   Description:<br/>
-   <%= @file.description %> 
-  </p>
+     <ul class="listH">
+         <li class="clearfix last">
+             <div class="img"><%= write_icon(@file)%></a></div>
+             <div class="info">
+                 <div class="metadata">
+                   <p class="title">
+                      <span class="meta">Creado por:</span> <strong><%= link_to @file.user.profile.full_name, profile_path(@file.user.profile)%></strong>
+                      <br/>
+                      <span class="meta">Creado el:</span> <%= @file.creation_date -%>
+                      <%unless @file.folder%>
+                        <br/>
+                        <span class="meta">Tamaño:</span> <%= number_to_human_size(@file.file_file_size)%>
+                        <br/>
+                        <span class="meta">Descargas:</span> <%= @file.downloads %>
+                      <%end%>
+                      <br />
+                      <span class="meta">Path:</span> <%= path(@file) %>
+                    </p>
+                 </div>
+                 <div class="text">
+                     <p><%= @file.description -%></p>
+                 </div>
+             </div><!--  fin info -->
 
+            <%= share_with_groups_link(@file) -%>
+            
+            <%if logged_in?-%>
+              <%if @file.user == current_user %>
+                <%= link_to "Editar", edit_member_depot_file_path(@file), :class => "button mainaction round" -%>
+              <% else %>
+                <%=report_abuse_link(@file, 'Reportar abuso', :class => 'button mainaction round') %>
+              <% end %>
+            <%end-%>
+            
+            <%if @file.folder%>
+              <%= render :partial => 'folder_content', :locals => {:files => @file.paginated_children}%>
+            <%else%>
+              <%= link_to "Descargar fichero",  depot_files_download_path(@file), :class => 'button round mainaction' %></h2>
+            <%end%>
+         </li>       
+     </ul>
 
-	<%if @file.folder%>
-		<%= render :partial => 'folder_content', :locals => {:files => @file.paginated_children}%>
-	<%else%>
-		<%= link_to "Download file",  depot_files_download_path %></h2>
-	<%end%> 
+     <%= render :partial => "shared/comments", :locals => { :commentable => @file } %>
 
- <%= render :partial => "shared/comments", :locals => { :commentable => @file } %>
-
+</div> <!-- /.internal_padding -->

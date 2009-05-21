@@ -13,6 +13,10 @@ class Depot::File < ActiveRecord::Base
   belongs_to :user, :class_name => "User", :foreign_key => "user_id"
   belongs_to :father, :class_name => "Depot::File", :foreign_key => "father_id"
   
+  record_activity_of :user
+  
+  named_scope :public, :conditions => {:privacy => 0}
+  
   has_many :children, :class_name => "Depot::File", :foreign_key => "father_id", :dependent => :destroy
 
   has_attached_file :file, {
@@ -54,6 +58,10 @@ class Depot::File < ActiveRecord::Base
 
   def owner
     user
+  end
+  
+  def folder?
+    folder
   end
 
 end

@@ -5,13 +5,19 @@ es:
     site:
       files: Ficheros
   tog_depot:
+    plugin_title: Ficheros
+    plugin_name: Depot
+    plugin_description: Pequeña gestión de ficheros
     site:
       privacy_error: No tienes permisos para ver ese fichero
     member:
       quota_error: Has alcanzado el espacio máximo para tu perfil 
       file_created: Fichero creado con éxito
       file_updated: Fichero actualizado con éxito
-      file_removed: Fichero eliminado con éxito               
+      file_removed: Fichero eliminado con éxito
+      create_file: Subir fichero
+      create_subfolder: Crear carpeta
+      quota_usage: Actualmente estas usando {{used}} de tus {{of}} ({{left}} disponibles)                   
     model:
       root: Raíz
       path: Ruta 
@@ -22,3 +28,7 @@ es:
       privacy_explanation: Este fichero/carpeta es privado
       file: Fichero
       description: Descripción
+      owner: Propietario
+      date: Fecha
+      size: Tamaño
+      downloads: Descargas
