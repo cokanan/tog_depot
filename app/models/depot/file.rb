@@ -64,5 +64,10 @@ class Depot::File < ActiveRecord::Base
     folder
   end
 
+  def self.site_search(query, search_options={})
+    sql = "%#{query}%"
+    Depot::File.public.find(:all, :conditions => ["name like ? or description like ? or file_file_name like ?", sql, sql, sql])
+  end
+  
 end
 

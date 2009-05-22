@@ -14,3 +14,5 @@ Tog::Plugins.settings :tog_depot, "file.max_size_file_kb"	=> "500",    #kb
                                   "file.user_quota_mb"	  => "50"      #mb
 
 Tog::Plugins.helpers Depot::FilesHelper
+
+Tog::Search.sources << "Depot::File"
