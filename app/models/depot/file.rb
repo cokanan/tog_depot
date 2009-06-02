@@ -23,8 +23,7 @@ class Depot::File < ActiveRecord::Base
     :url => "/system/:class/:attachment/:id/:style_:basename.:extension",
   }.merge(Tog::Plugins.storage_options)
       
-  validates_attachment_size :file, :message => I18n.t('tog_depot.model.validations.file_size'),
-    :less_than => Tog::Plugins.settings(:tog_depot, "file.max_size_file_kb").to_i.kilobytes
+  validates_attachment_size :file, :message => I18n.t('tog_depot.model.validations.file_size', :file_size => Tog::Plugins.settings(:tog_depot, "file.max_size_file_kb")), :less_than => Tog::Plugins.settings(:tog_depot, "file.max_size_file_kb").to_i.kilobytes
 
   attr_accessible :name, :description, :folder, :tag_list, :privacy, :downloads, :file
   validates_presence_of :name  

@@ -46,7 +46,7 @@ class Member::Depot::FilesController < Member::BaseController
     @file.father = father if father && father.user == current_user
  
     respond_to do |wants|
-      if @file.save!
+      if @file.save
         wants.html do
           flash[:ok] = I18n.t('tog_depot.member.file_created') 
           redirect_to member_depot_file_path(@file)

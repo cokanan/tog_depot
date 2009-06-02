@@ -31,4 +31,6 @@ en:
       owner: Onwer
       date: Date
       size: Size
-      downloads: Downloads      
+      downloads: Downloads
+      validations:
+        file_size: File too big. It must be < {{file_size}} KB  

@@ -32,3 +32,5 @@ es:
       date: Fecha
       size: Tamaño
       downloads: Descargas
+      validations:
+        file_size: demasiado grande. Tiene que ser < {{file_size}} KB
